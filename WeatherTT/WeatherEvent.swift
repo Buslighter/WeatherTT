@@ -7,9 +7,10 @@ enum WeatherEvent: String, CaseIterable {
     case fog
     case snow
     case cloudy
-    case windy
     case hail
     case man
     
+    var localized: String {
+        return NSLocalizedString(self.rawValue, comment: "")
+    }
 }
-

@@ -27,28 +27,23 @@ class WeatherAnimator: UIView {
     }
     
     private func animateWeather(event: WeatherEvent) {
-        // Clear any existing subviews or layers
         subviews.forEach { $0.removeFromSuperview() }
         layer.sublayers?.forEach { $0.removeFromSuperlayer() }
-        let animator: WeatherAnimation?
         
         switch event {
         case .clear:
-            animator = DownfallAnimation(type: event)
+            animateClear()
         case .rain, .hail, .snow, .man:
-            animator = DownfallAnimation(type: event)
-        case .thunderstorm:
-            animator = DownfallAnimation(type: event)
-        case .fog:
-            animator = DownfallAnimation(type: event)
-        case .cloudy:
-            animator = DownfallAnimation(type: event)
-        case .windy:
-            animator = DownfallAnimation(type: event)
-        }
-        if let animator = animator {
+            let animator = DownfallAnimation(type: event)
             animator.animate(in: self)
+        case .thunderstorm:
+            animateThunderstorm()
+        case .fog:
+            animateFog()
+        case .cloudy:
+            animateCloudy()
         }
+        
     }
     
     private func animateClear() {
@@ -84,26 +79,12 @@ class WeatherAnimator: UIView {
     private func animateCloudy() {
         backgroundColor = UIColor.lightGray
         
-        let cloudImageView = UIImageView(frame: CGRect(x: 0, y: 100, width: 200, height: 100))
+        let cloudImageView = UIImageView(frame: CGRect(x: 0, y: 300, width: 200, height: 100))
         cloudImageView.image = UIImage(named: "cloud")
         addSubview(cloudImageView)
         
-        UIView.animate(withDuration: 10.0, delay: 0, options: [.curveLinear, .repeat], animations: {
-            cloudImageView.frame.origin.x = self.bounds.width
-        }, completion: nil)
-    }
-    
-    private func animateWindy() {
-        backgroundColor = UIColor.cyan
-        
-        let windImageView = UIImageView(frame: CGRect(x: 0, y: bounds.height / 2, width: 100, height: 100))
-        windImageView.image = UIImage(named: "wind")
-        addSubview(windImageView)
-        
-        UIView.animate(withDuration: 2.0, delay: 0, options: [.curveEaseInOut, .repeat, .autoreverse], animations: {
-            windImageView.frame.origin.x = self.bounds.width - 100
+        UIView.animate(withDuration: 7.0, delay: 0, options: [.autoreverse, .curveLinear, .repeat], animations: {
+            cloudImageView.frame.origin.x = self.bounds.width - 200
         }, completion: nil)
     }
 }
-
-

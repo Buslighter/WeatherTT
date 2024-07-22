@@ -1,0 +1,15 @@
+/* 
+  Localizable.strings
+  WeatherTT
+
+  Created by gleba on 22.07.2024.
+  
+*/
+"clear" = "Clear";
+"rain" = "Rain";
+"thunderstorm" = "Thunderstorm";
+"fog" = "Fog";
+"snow" = "Snow";
+"cloudy" = "Cloudy";
+"hail" = "Hail";
+"man" = "Man";
