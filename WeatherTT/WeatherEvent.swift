@@ -1,6 +1,6 @@
 import Foundation
 
-enum WeatherEvent: CaseIterable {
+enum WeatherEvent: String, CaseIterable {
     case clear
     case rain
     case thunderstorm
@@ -9,6 +9,7 @@ enum WeatherEvent: CaseIterable {
     case cloudy
     case windy
     case hail
+    case man
     
 }
 

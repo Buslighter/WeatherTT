@@ -7,6 +7,10 @@ class WeatherAnimator: UIView {
             animateWeather(event: currentWeather)
         }
     }
+    func stopAnimation() {
+        subviews.forEach { $0.removeFromSuperview() }
+        layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+    }
     
     init(frame: CGRect, initialWeather: WeatherEvent = WeatherEvent.allCases.randomElement() ?? .clear) {
         self.currentWeather = initialWeather
@@ -22,57 +26,31 @@ class WeatherAnimator: UIView {
         // Clear any existing subviews or layers
         subviews.forEach { $0.removeFromSuperview() }
         layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        var animator: WeatherAnimation? // let
+        animator = DownfallAnimation(type: .rain) // delete
         
         switch event {
         case .clear:
             animateClear()
-        case .rain:
-            animateRain()
+        case .rain, .hail, .snow, .man:
+            animator = DownfallAnimation(type: event)
         case .thunderstorm:
             animateThunderstorm()
         case .fog:
             animateFog()
-        case .snow:
-            animateSnow()
         case .cloudy:
             animateCloudy()
         case .windy:
             animateWindy()
-        case .hail:
-            animateHail()
+        }
+        if let animator = animator {
+            animator.animate(in: self)
         }
     }
     
     private func animateClear() {
         backgroundColor = UIColor.blue
     }
-    
-    private func animateRain() {
-        backgroundColor = UIColor.gray
-
-        let emitter = CAEmitterLayer()
-        emitter.emitterShape = .line
-        emitter.emitterPosition = CGPoint(x: bounds.width / 2, y: -50)
-        emitter.emitterSize = CGSize(width: bounds.width, height: 1)
-
-        let cell = CAEmitterCell()
-        cell.birthRate = 2
-        cell.lifetime = 6.0
-        cell.velocity = 80
-        cell.velocityRange = 20
-        cell.emissionLongitude = CGFloat.pi
-        cell.yAcceleration = 100
-        cell.spinRange = 0.1
-        cell.scale = 0.03
-        cell.scaleRange = 0.02
-        cell.contents = UIImage(named: "raindrop")?.cgImage
-
-        emitter.emitterCells = [cell]
-        layer.insertSublayer(emitter, at: 0)
-    }
-
-
-
     
     private func animateThunderstorm() {
         backgroundColor = UIColor.darkGray
@@ -100,25 +78,6 @@ class WeatherAnimator: UIView {
         }, completion: nil)
     }
     
-    private func animateSnow() {
-        backgroundColor = UIColor.white
-        
-        let snowLayer = CAEmitterLayer()
-        snowLayer.emitterShape = .line
-        snowLayer.emitterPosition = CGPoint(x: bounds.width / 2, y: 0)
-        snowLayer.emitterSize = CGSize(width: bounds.width, height: 1)
-        
-        let snowCell = CAEmitterCell()
-        snowCell.birthRate = 10
-        snowCell.lifetime = 10.0
-        snowCell.velocity = 30
-        snowCell.scale = 0.1
-        snowCell.contents = UIImage(named: "snowflake")?.cgImage
-        
-        snowLayer.emitterCells = [snowCell]
-        layer.addSublayer(snowLayer)
-    }
-    
     private func animateCloudy() {
         backgroundColor = UIColor.lightGray
         
@@ -142,23 +101,82 @@ class WeatherAnimator: UIView {
             windImageView.frame.origin.x = self.bounds.width - 100
         }, completion: nil)
     }
+}
+protocol WeatherAnimation {
+    func animate(in view: WeatherAnimator)
+}
+
+
+class DownfallAnimation: WeatherAnimation {
+    private var eventType: WeatherEvent
+    private var settings: DownfallSetings?
     
-    private func animateHail() {
-        backgroundColor = UIColor.darkGray
-        
-        let hailLayer = CAEmitterLayer()
-        hailLayer.emitterShape = .line
-        hailLayer.emitterPosition = CGPoint(x: bounds.width / 2, y: 0)
-        hailLayer.emitterSize = CGSize(width: bounds.width, height: 1)
-        
-        let hailCell = CAEmitterCell()
-        hailCell.birthRate = 50
-        hailCell.lifetime = 3.0
-        hailCell.velocity = 200
-        hailCell.scale = 0.2
-        hailCell.contents = UIImage(named: "hail")?.cgImage
-        
-        hailLayer.emitterCells = [hailCell]
-        layer.addSublayer(hailLayer)
+    struct DownfallSetings {
+        private (set) var backgroundColor: UIColor?
+        private (set) var emissionLongtitudeScale: CGFloat
+        private (set) var image: CGImage?
+        private (set) var emissionPositionScale: CGFloat
+        private (set) var scale: CGFloat
+        private (set) var spinRange: CGFloat
+        init(backgroundColor: UIColor = .clear, emitterPositionScale: CGFloat = 1, image: CGImage?, emissionPositionScale: CGFloat = 2, scale: CGFloat = 0.03, spingRange: CGFloat = 0.01) {
+            self.backgroundColor = backgroundColor
+            self.emissionLongtitudeScale = emitterPositionScale
+            self.image = image
+            self.emissionPositionScale = emissionPositionScale
+            self.scale = scale
+            self.spinRange = spingRange
+        }
+    }
+    
+    init(type: WeatherEvent) {
+        self.eventType = type
+        setupParameters()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func animate(in view: WeatherAnimator) {
+            let emitter = createEmitterLayer(in: view)
+            view.layer.insertSublayer(emitter, at: 0)
+        }
+    
+    private func setupParameters() {
+        switch eventType {
+        case .rain:
+            self.settings = .init(backgroundColor:  UIColor.gray, emitterPositionScale: -2, image: UIImage(named: eventType.rawValue)?.cgImage, emissionPositionScale: 1)
+        case .thunderstorm:
+            self.settings = .init(backgroundColor:  UIColor.gray, image: UIImage(named: eventType.rawValue)?.cgImage)
+        case .snow, .man:
+            self.settings = .init(backgroundColor:  UIColor.gray, emitterPositionScale: -2, image: UIImage(named: eventType.rawValue)?.cgImage, emissionPositionScale: 1, scale: 0.15, spingRange: 10)
+        case .hail:
+            self.settings = .init(backgroundColor:  UIColor.gray, emitterPositionScale: -2 , image: UIImage(named: eventType.rawValue)?.cgImage, emissionPositionScale: 1)
+        default:
+            break
+        }
+    }
+    private func createEmitterLayer(in view: UIView) -> CAEmitterLayer {
+        view.backgroundColor = settings?.backgroundColor
+
+        let emitter = CAEmitterLayer()
+        emitter.emitterShape = .line
+        emitter.emitterPosition = CGPoint(x: view.bounds.width / (settings?.emissionPositionScale ?? 1) , y: -50)
+        emitter.emitterSize = CGSize(width: view.bounds.width, height: 1)
+
+        let cell = CAEmitterCell()
+        cell.birthRate = 7
+        cell.lifetime = 6.0
+        cell.velocity = 100 // 100
+        cell.velocityRange = 80 //20
+        cell.emissionLongitude = CGFloat.pi / (settings?.emissionLongtitudeScale ?? 1)
+        cell.yAcceleration = 100
+        cell.spinRange = settings?.spinRange ?? 0.02
+        cell.scale = settings?.scale ?? 0.01
+        cell.scaleRange = 0.02
+        cell.contents = self.settings?.image
+
+        emitter.emitterCells = [cell]
+        return emitter
     }
 }
