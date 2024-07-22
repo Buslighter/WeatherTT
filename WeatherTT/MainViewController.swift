@@ -36,7 +36,7 @@ final class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor.red // Установим цвет фона ViewController
+        view.backgroundColor = UIColor.white // Установим цвет фона ViewController
         
         view.addSubview(weatherView)
         view.addSubview(collectionView)
@@ -114,28 +114,28 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         updateWeather(event: selectedEvent)
         
         // Scroll to the selected item to center it
-        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        self.collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
     }
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        let cellWidthIncludingSpacing = layout.itemSize.width + layout.minimumLineSpacing
-
-        let estimatedIndex = scrollView.contentOffset.x / cellWidthIncludingSpacing
-        let index: Int
-        
-        if velocity.x > 0 {
-            index = Int(ceil(estimatedIndex))
-        } else if velocity.x < 0 {
-            index = Int(floor(estimatedIndex))
-        } else {
-            index = Int(round(estimatedIndex))
-        }
-        
-        let safeIndex = max(0, min(index, WeatherEvent.allCases.count - 1))
-        let xOffset = CGFloat(safeIndex) * cellWidthIncludingSpacing - (collectionView.bounds.width - layout.itemSize.width) / 2
-        targetContentOffset.pointee = CGPoint(x: xOffset, y: 0)
-    }
+//    
+//    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+//        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+//        let cellWidthIncludingSpacing = layout.itemSize.width + layout.minimumLineSpacing
+//
+//        let estimatedIndex = scrollView.contentOffset.x / cellWidthIncludingSpacing
+//        let index: Int
+//        
+//        if velocity.x > 0 {
+//            index = Int(ceil(estimatedIndex))
+//        } else if velocity.x < 0 {
+//            index = Int(floor(estimatedIndex))
+//        } else {
+//            index = Int(round(estimatedIndex))
+//        }
+//        
+//        let safeIndex = max(0, min(index, WeatherEvent.allCases.count - 1))
+//        let xOffset = CGFloat(safeIndex) * cellWidthIncludingSpacing - (collectionView.bounds.width - layout.itemSize.width) / 2
+//        targetContentOffset.pointee = CGPoint(x: xOffset, y: 0)
+//    }
 }
 
 extension MainViewController: UICollectionViewDelegateFlowLayout {
