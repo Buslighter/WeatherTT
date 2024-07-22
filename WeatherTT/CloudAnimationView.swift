@@ -1,5 +1,9 @@
 import UIKit
 
+protocol WeatherAnimation {
+    func animate(in view: WeatherAnimator)
+}
+
 class WeatherAnimator: UIView {
     
     var currentWeather: WeatherEvent = .clear {
@@ -102,9 +106,6 @@ class WeatherAnimator: UIView {
         }, completion: nil)
     }
 }
-protocol WeatherAnimation {
-    func animate(in view: WeatherAnimator)
-}
 
 
 class DownfallAnimation: WeatherAnimation {
@@ -118,13 +119,16 @@ class DownfallAnimation: WeatherAnimation {
         private (set) var emissionPositionScale: CGFloat
         private (set) var scale: CGFloat
         private (set) var spinRange: CGFloat
-        init(backgroundColor: UIColor = .clear, emitterPositionScale: CGFloat = 1, image: CGImage?, emissionPositionScale: CGFloat = 2, scale: CGFloat = 0.03, spingRange: CGFloat = 0.01) {
+        private (set) var speed: CGFloat
+        
+        init(backgroundColor: UIColor = .clear, emitterPositionScale: CGFloat = 1, image: CGImage?, emissionPositionScale: CGFloat = 2, scale: CGFloat = 0.03, spingRange: CGFloat = 0.01, speed: CGFloat = 100) {
             self.backgroundColor = backgroundColor
             self.emissionLongtitudeScale = emitterPositionScale
             self.image = image
             self.emissionPositionScale = emissionPositionScale
             self.scale = scale
             self.spinRange = spingRange
+            self.speed = speed
         }
     }
     
@@ -149,9 +153,18 @@ class DownfallAnimation: WeatherAnimation {
         case .thunderstorm:
             self.settings = .init(backgroundColor:  UIColor.gray, image: UIImage(named: eventType.rawValue)?.cgImage)
         case .snow, .man:
-            self.settings = .init(backgroundColor:  UIColor.gray, emitterPositionScale: -2, image: UIImage(named: eventType.rawValue)?.cgImage, emissionPositionScale: 1, scale: 0.15, spingRange: 10)
+            self.settings = .init(backgroundColor:  UIColor(red: 173/255,
+                                                            green: 216/255,
+                                                            blue: 230/255,
+                                                            alpha: 1.0
+                                                            ),
+                                  emitterPositionScale: -2,
+                                  image: UIImage(named: eventType.rawValue)?.cgImage, 
+                                  emissionPositionScale: 1,
+                                  scale: 0.15,
+                                  spingRange: 10)
         case .hail:
-            self.settings = .init(backgroundColor:  UIColor.gray, emitterPositionScale: -2 , image: UIImage(named: eventType.rawValue)?.cgImage, emissionPositionScale: 1)
+            self.settings = .init(backgroundColor:  UIColor.gray, emitterPositionScale: -2 , image: UIImage(named: eventType.rawValue)?.cgImage, emissionPositionScale: 1, speed: 100)
         default:
             break
         }
@@ -167,8 +180,8 @@ class DownfallAnimation: WeatherAnimation {
         let cell = CAEmitterCell()
         cell.birthRate = 7
         cell.lifetime = 6.0
-        cell.velocity = 100 // 100
-        cell.velocityRange = 80 //20
+        cell.velocity = settings?.speed ?? 100 // 100
+        cell.velocityRange = 20 //20
         cell.emissionLongitude = CGFloat.pi / (settings?.emissionLongtitudeScale ?? 1)
         cell.yAcceleration = 100
         cell.spinRange = settings?.spinRange ?? 0.02
