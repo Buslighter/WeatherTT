@@ -14,6 +14,8 @@
 		15EE27312C494C78007A1E7C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EE27302C494C78007A1E7C /* MainViewController.swift */; };
 		15EE27372C49964B007A1E7C /* CloudAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EE27362C49964B007A1E7C /* CloudAnimationView.swift */; };
 		15EE27392C4ACEF5007A1E7C /* Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EE27382C4ACEF5007A1E7C /* Layer.swift */; };
+		15EE273B2C4ED598007A1E7C /* rainingmen.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15EE273A2C4ED598007A1E7C /* rainingmen.mp3 */; };
+		15EE273D2C4ED958007A1E7C /* DonwfallAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EE273C2C4ED958007A1E7C /* DonwfallAnimation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		15EE27302C494C78007A1E7C /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		15EE27362C49964B007A1E7C /* CloudAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudAnimationView.swift; sourceTree = "<group>"; };
 		15EE27382C4ACEF5007A1E7C /* Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layer.swift; sourceTree = "<group>"; };
+		15EE273A2C4ED598007A1E7C /* rainingmen.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = rainingmen.mp3; sourceTree = "<group>"; };
+		15EE273C2C4ED958007A1E7C /* DonwfallAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonwfallAnimation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,10 +66,12 @@
 				15EE27302C494C78007A1E7C /* MainViewController.swift */,
 				15EE272E2C493305007A1E7C /* WeatherEvent.swift */,
 				15EE27362C49964B007A1E7C /* CloudAnimationView.swift */,
+				15EE273C2C4ED958007A1E7C /* DonwfallAnimation.swift */,
 				15EE27382C4ACEF5007A1E7C /* Layer.swift */,
 				15D8ACA12C46BEEF00A7BDC2 /* Assets.xcassets */,
 				15D8ACA32C46BEEF00A7BDC2 /* LaunchScreen.storyboard */,
 				15D8ACA62C46BEEF00A7BDC2 /* Info.plist */,
+				15EE273A2C4ED598007A1E7C /* rainingmen.mp3 */,
 			);
 			path = WeatherTT;
 			sourceTree = "<group>";
@@ -129,6 +135,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				15D8ACA22C46BEEF00A7BDC2 /* Assets.xcassets in Resources */,
+				15EE273B2C4ED598007A1E7C /* rainingmen.mp3 in Resources */,
 				15D8ACA52C46BEEF00A7BDC2 /* Base in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -141,6 +148,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				15EE272F2C493305007A1E7C /* WeatherEvent.swift in Sources */,
+				15EE273D2C4ED958007A1E7C /* DonwfallAnimation.swift in Sources */,
 				15D8AC992C46BEEB00A7BDC2 /* AppDelegate.swift in Sources */,
 				15EE27392C4ACEF5007A1E7C /* Layer.swift in Sources */,
 				15EE27312C494C78007A1E7C /* MainViewController.swift in Sources */,
@@ -214,7 +222,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -271,7 +279,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;

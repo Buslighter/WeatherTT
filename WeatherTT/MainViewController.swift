@@ -1,7 +1,8 @@
 import UIKit
+import AVFoundation
 
 final class MainViewController: UIViewController {
-    
+
     private lazy var weatherView: WeatherAnimator = {
         let weatherView = WeatherAnimator(frame: view.bounds)
         weatherView.translatesAutoresizingMaskIntoConstraints = false
@@ -15,37 +16,62 @@ final class MainViewController: UIViewController {
         layout.minimumLineSpacing = 10
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = UIColor.clear
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.isPagingEnabled = true
+        collectionView.isScrollEnabled = true
+        collectionView.bounces = true
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(WeatherCell.self, forCellWithReuseIdentifier: WeatherCell.identifier)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
     }()
     
+    private var audioplayer: AVAudioPlayer?
     private var animationTimer: Timer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor.white // Установим цвет фона ViewController
+        view.backgroundColor = UIColor.red // Установим цвет фона ViewController
         
         view.addSubview(weatherView)
         view.addSubview(collectionView)
         setupConstraints()
+        setupAudioPlayer()
         updateWeather(event: .clear)
     }
     
     func updateWeather(event: WeatherEvent) {
         weatherView.currentWeather = event
-        
-        // Invalidate any existing timer
+    
         animationTimer?.invalidate()
         
-        // Schedule a timer to stop the animation after 15 seconds
+        if event == .man {
+            audioplayer?.play()
+        } else if let _ = audioplayer?.isPlaying {
+            audioplayer?.stop()
+        }
+        
         animationTimer = Timer.scheduledTimer(withTimeInterval: 15.0, repeats: false) { [weak self] _ in
             self?.stopWeatherAnimation()
+        }
+    }
+    
+    private func setupAudioPlayer() {
+        guard let path = Bundle.main.path(forResource: "rainingmen", ofType: "mp3") else {
+            print("Audio file not found")
+            return
+        }
+        do {
+            let url = URL(filePath: path)
+            self.audioplayer = try AVAudioPlayer(contentsOf: url)
+            self.audioplayer?.prepareToPlay()
+        } catch let error {
+            print("Failed to initialize AVAudioPlayer: \(error.localizedDescription)")
         }
     }
     
@@ -94,8 +120,8 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         let cellWidthIncludingSpacing = layout.itemSize.width + layout.minimumLineSpacing
-        
-        let estimatedIndex = targetContentOffset.pointee.x / cellWidthIncludingSpacing
+
+        let estimatedIndex = scrollView.contentOffset.x / cellWidthIncludingSpacing
         let index: Int
         
         if velocity.x > 0 {
